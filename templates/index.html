@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cardinals Ticket Tracking App</title>
+</head>
+<body>
+
+
+    <table>
+        <tr>
+            {% for table in table_list %}
+                <th>{{ table }}</th>
+            {% endfor %}
+        </tr>
+        {{ table_html_vals }}
+    </table>
+</body>
+</html>

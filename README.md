@@ -68,4 +68,5 @@ A standard MIT license is in place for this project.
 PostgreSQL = https://www.postgresql.org/
 
 Weather API = https://open-meteo.com/
+
 MLB Data API = https://github.com/jldbc/pybaseball

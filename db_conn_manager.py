@@ -63,7 +63,7 @@ def get_table_cols(table_list):
 		column_dict[i] = columns
 	return column_dict
 
-#### For Testing Purposes Only ####
-if __name__ == '__main__':
-	table_list = get_all_tables()
-	print(get_table_cols(table_list=table_list))
+# #### For Testing Purposes Only ####
+# if __name__ == '__main__':
+# 	table_list = get_all_tables()
+# 	print(get_table_cols(table_list=table_list))
