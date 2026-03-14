@@ -32,14 +32,20 @@ conn = create_post_conn()
 
 # Define Functions
 def general_query(string):
-	global conn
-	conn = check_post_conn(conn)
-	cursor = conn.cursor()
+	global engine
 	try:
-		cursor.execute(string)
-		return cursor.fetchall()
+		df = pd.read_sql(string, con=engine)
+		return df
 	except:
-		pass
+		return pd.DataFrame() # Creates a blank on the page so and skips creating the error... hopefully...
+	# global conn
+	# conn = check_post_conn(conn)
+	# cursor = conn.cursor()
+	# try:
+	# 	cursor.execute(string)
+	# 	return cursor.fetchall()
+	# except:
+	# 	pass
 
 def get_all_tables():
 	global conn

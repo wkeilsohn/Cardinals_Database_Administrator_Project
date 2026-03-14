@@ -18,7 +18,7 @@ proj_cols = cols_dict['project_data'] # Yes, hard coding, I'm sorry...
 weather_cols = cols_dict['weather_data']
 mlb_cols = cols_dict['mlb_data']
 table_html_vals = ""
-for i in range(0, len(weather_cols)):
+for i in range(0, len(weather_cols)): # Ugh... there has to be a better way...
 	try:
 		proj_val = "<td>{}</td> ".format(proj_cols[i])
 	except:
@@ -53,14 +53,18 @@ def index():
 	if request.method == 'POST':
 		query = request.form['query']
 		data = general_query(query)
-		print(data)
-		return render_template('index.html', table_html_vals=table_html_vals, table_list=table_list, form=form)
+		data = Markup(data.to_html())
+		return render_template('results.html', table_html_vals=table_html_vals, table_list=table_list, results_content=data)
 	else:
-		return render_template('index.html', table_html_vals=table_html_vals, table_list=table_list, form=form)
+		return render_template('general_form.html', table_html_vals=table_html_vals, table_list=table_list, form=form)
 
-@app.route("/builder")
-def builder():
-	return "<p>Query Builder Goes Here</p>"
+#### --- If I had more time, I would have built this functionality out --- ####
+
+# @app.route("/builder")
+# def builder():
+# 	return "<p>Query Builder Goes Here</p>"
+
+#### ---                                                               --- ####
 
 @app.route("/about")
 def about():

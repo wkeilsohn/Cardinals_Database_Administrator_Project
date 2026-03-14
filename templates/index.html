@@ -6,14 +6,10 @@
 </head>
 <body>
 
-<form method="POST" action="/">
-    {{ form.hidden_tag() }}
+{% block content %}
+{% endblock %}
 
-    <label for="query">{{ form.query.label }}</label>
-    {{ form.query() }}
-
-    {{ form.submit() }}
-</form>
+<br>
 
     <table id="db_cols">
         <tr>
