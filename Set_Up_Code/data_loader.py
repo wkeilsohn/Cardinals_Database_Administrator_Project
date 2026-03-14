@@ -21,12 +21,12 @@ load_dotenv()
 # Define Variables
 
 ## PostgreSQL Connection Related
-address = "127.0.0.1" # Yes, in prod you should hide all of these, but this is a quick project and I'm running it on my local machine so it is what it is. 
-port = "5432" # Also, yes, these are all default values. 
-db_name = "postgres"
-user_name = "postgres"
+address = os.getenv("ADDRESS") 
+port = os.getenv("PORT") 
+db_name = os.getenv("DB_NAME")
+user_name = os.getenv("USER_NAME")
 password = os.getenv("PASSWORD") # Too spicy not to hide. 
-connection_string = "postgresql+psycopg2://postgres:{}@127.0.0.1:5432/postgres".format(password)
+connection_string = "postgresql+psycopg2://{}:{}@{}:{}/{}".format(user_name, password, address, port, db_name)
 engine = create_engine(connection_string)
 db = create_engine(connection_string)
 conn1 = db.connect()

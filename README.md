@@ -8,7 +8,11 @@ This project serves as a an example to model how ticket sales may be affected by
 
  If you intend for this be run locally then you will need to install postgreSQL on to your machine. If you intend to use a server or cloud based system, then you can presumably skip this part, and follow the instructions provided by your host provider. 
 
- To install PostgreSQL navigate to the link provided at the bottom, select the download file format appropriate for your system, and... 
+ To install PostgreSQL navigate to the link provided at the bottom, select the download file format appropriate for your system, and follow the onscreen instructions.
+
+ At some point in the installation / setup process, you will be asked to provide a name, port, and password for your postgreSQL instance. This project assumes that the name and port are both the default options provided by the instalation wizard. If you change these default options, you will need to change their respective values in the code. This is NOT reccomended.  
+
+ Once you have decided on a password, please include it in the .env file. An example is provided below. 
 
 ### Configuring Your System
 
@@ -32,6 +36,10 @@ You will also need to supply your own .env file. The following variables will ne
 ```
 PASSWORD = "####"
 
+ADDRESS = "127.0.0.1"
+PORT = "5432"
+DB_NAME = "postgres"
+USER_NAME = "postgres"
 ```
 Replace the hastag sysmbol(s) with your keys / passwords. 
 
