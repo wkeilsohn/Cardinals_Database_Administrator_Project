@@ -11,7 +11,8 @@ from sqlalchemy import create_engine
 
 ## Load Custom Files
 from project_data import dba_project_data_df
-from weather_data import weather_data_df
+from open_metro_api import daily_dataframe as weather_data_df
+from update_open_metro_data_api import *
 
 # Load in Secrets
 load_dotenv()
@@ -31,6 +32,8 @@ conn1 = db.connect()
 
 ## Construction Queries
 check_query = "SELECT to_regclass('public.{}') IS NOT NULL AS table_exists;"
+check_row_query = "SELECT * FROM {};"
+check_last_entry_query = "SELECT weather_data.date FROM weather_data ORDER BY date DESC LIMIT 1;"
 
 ### Table Creation Queries
 table_dic = {'project_data': "CREATE TABLE IF NOT EXISTS project_data (snapshot_date date, game_date date, unique_tickets_sold int, unique_page_clicks int);",
@@ -73,6 +76,25 @@ def validate_and_create_table(cursor, conn):
 		else:
 			create_table(create_query=value, cursor=cursor, conn=conn)
 
+def check_weather_data(cursor):
+	global check_row_query
+	check_weather_data_query = check_row_query.format("weather_data")
+	cursor.execute(check_weather_data_query)
+	records = cursor.fetchall()
+	if records is None:
+		weather_data_df.to_sql('weather_data', con=conn1, if_exists='append', index=False)
+	else:
+		cursor.execute(check_last_entry_query)
+		last_date = cursor.fetchall()[0]
+		new_dates = prep_dates(last_date)
+		if new_dates == []:
+			pass
+		else:
+			client_setup()
+			resp = call_api(start_date=new_dates(0), end_date=new_dates(1))
+			update_weather_data_df = process_data(resp=resp)
+			update_weather_data_df.to_sql('weather_data', con=conn1, if_exists='append', index=False)
+
 # Run Application
 if __name__ == "__main__":
 	conn = create_post_conn()
@@ -80,5 +102,5 @@ if __name__ == "__main__":
 	cursor = conn.cursor()
 	validate_and_create_table(cursor=cursor, conn=conn) # Arguably redundant, but helps to better format the dates
 	dba_project_data_df.to_sql('project_data', con=conn1, if_exists='append', index=False) # Project data has no time stamp, so let's keep things consitant.  
-	weather_data_df.to_sql('weather_data', con=conn1, if_exists='append', index=False)
+	check_weather_data(cursor=cursor)
 	conn.close() # Just good etiquite. 
