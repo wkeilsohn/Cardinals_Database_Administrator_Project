@@ -2,7 +2,7 @@
 # March 14, 2026
 
 # Import Packages
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, redirect
 from markupsafe import Markup
 import os
 from dotenv import load_dotenv
@@ -43,13 +43,20 @@ app.config['SECRET_KEY'] = os.getenv("PASSWORD") # Required for Flask-WTF... and
 
 # Declare Routes and functions
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def index():
 	global cols_list
 	global table_html_vals
 	global raw_query_form
 	form = raw_query_form()
-	return render_template('index.html', table_html_vals=table_html_vals, table_list=table_list, form=form)
+	data = 0
+	if request.method == 'POST':
+		query = request.form['query']
+		data = general_query(query)
+		print(data)
+		return render_template('index.html', table_html_vals=table_html_vals, table_list=table_list, form=form)
+	else:
+		return render_template('index.html', table_html_vals=table_html_vals, table_list=table_list, form=form)
 
 @app.route("/builder")
 def builder():
