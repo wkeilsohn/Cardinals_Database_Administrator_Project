@@ -2,11 +2,12 @@
 <html>
 <head>
     <title>Cardinals Ticket Tracking App</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/index.css') }}">
 </head>
 <body>
 
 
-    <table>
+    <table id="db_cols">
         <tr>
             {% for table in table_list %}
                 <th>{{ table }}</th>
