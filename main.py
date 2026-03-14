@@ -4,9 +4,12 @@
 # Import Packages
 from flask import Flask, render_template, url_for
 from markupsafe import Markup
+import os
+from dotenv import load_dotenv
 
 # Import Custom Scripts
 from db_conn_manager import general_query, get_all_tables, get_table_cols
+from project_forms import raw_query_form
 
 # Define Global Functions
 table_list = get_all_tables()
@@ -34,13 +37,19 @@ table_html_vals = Markup(table_html_vals)
 # Start Flask
 app = Flask(__name__)
 
+# Config Forms
+load_dotenv()
+app.config['SECRET_KEY'] = os.getenv("PASSWORD") # Required for Flask-WTF... and yes I am being lazy. Don't do this in prod. 
+
 # Declare Routes and functions
 
 @app.route("/")
 def index():
 	global cols_list
 	global table_html_vals
-	return render_template('index.html', table_html_vals=table_html_vals, table_list=table_list)
+	global raw_query_form
+	form = raw_query_form()
+	return render_template('index.html', table_html_vals=table_html_vals, table_list=table_list, form=form)
 
 @app.route("/builder")
 def builder():
