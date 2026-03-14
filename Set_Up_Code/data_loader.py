@@ -9,25 +9,14 @@ from dotenv import load_dotenv
 import psycopg2 as psy
 from sqlalchemy import create_engine
 
+## Load Custom Files
+from project_data import dba_project_data_df
+from weather_data import weather_data_df
+
 # Load in Secrets
 load_dotenv()
 
 # Define Variables
-
-## File Management Related
-current_work_dir = os.getcwd()
-current_main_dir = os.path.abspath(os.path.join(current_work_dir, os.pardir))
-data_dir = os.path.join(current_main_dir, "Raw_Data")
-
-### Data Files
-dba_project_data = os.path.join(data_dir, "DBA Project - Data Set.xlsx")
-# game_data # TBD
-# weather_data # TBD
-
-#### Load Data Into Pandas
-dba_project_data_df = pd.read_excel(dba_project_data)
-# game_data # TBD
-# weather_data # TBD
 
 ## PostgreSQL Connection Related
 address = "127.0.0.1" # Yes, in prod you should hide all of these, but this is a quick project and I'm running it on my local machine so it is what it is. 
@@ -44,7 +33,8 @@ conn1 = db.connect()
 check_query = "SELECT to_regclass('public.{}') IS NOT NULL AS table_exists;"
 
 ### Table Creation Queries
-table_dic = {'project_data': "CREATE TABLE IF NOT EXISTS project_data (snapshot_date date, game_date date, unique_tickets_sold int, unique_page_clicks int);"}
+table_dic = {'project_data': "CREATE TABLE IF NOT EXISTS project_data (snapshot_date date, game_date date, unique_tickets_sold int, unique_page_clicks int);",
+'weather_data': "CREATE TABLE IF NOT EXISTS weather_data (date date, temperature_2m_max float, temperature_2m_min float, apparent_temperature_max float, apparent_temperature_min float, rain_sum float, showers_sum float, snowfall_sum float, precipitation_sum float, precipitation_hours float);"}
 
 # Declare Functions
 def create_post_conn():
@@ -88,6 +78,7 @@ if __name__ == "__main__":
 	conn = create_post_conn()
 	conn = check_post_conn(conn)
 	cursor = conn.cursor()
-	validate_and_create_table(cursor=cursor, conn=conn)
-	dba_project_data_df.to_sql('project_data', con=conn1, if_exists='replace', index=False) # Should "append", but no new data is coming in, so this is fine. 
+	validate_and_create_table(cursor=cursor, conn=conn) # Arguably redundant, but helps to better format the dates
+	dba_project_data_df.to_sql('project_data', con=conn1, if_exists='append', index=False) # Project data has no time stamp, so let's keep things consitant.  
+	weather_data_df.to_sql('weather_data', con=conn1, if_exists='append', index=False)
 	conn.close() # Just good etiquite. 

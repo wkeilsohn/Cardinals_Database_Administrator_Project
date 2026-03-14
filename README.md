@@ -16,3 +16,4 @@ A standard MIT license is in place for this project.
 
 ## Sources
 
+Weather API = OpenMetro.com
