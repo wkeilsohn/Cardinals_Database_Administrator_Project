@@ -9,10 +9,19 @@ from dotenv import load_dotenv
 import psycopg2 as psy
 from sqlalchemy import create_engine
 
+# Import Support Scripts
+#### --- These are only for updating the weather --- ####
+from Set_Up_Code.open_metro_api import daily_dataframe as weather_data_df
+from Set_Up_Code.update_open_metro_data_api import *
+
 # Load in Secrets
 load_dotenv()
 
 # Define Variables
+
+## Weather Variables
+check_row_query = "SELECT * FROM {};"
+check_last_entry_query = "SELECT weather_data.date FROM weather_data ORDER BY date DESC LIMIT 1;"
 
 ## PostgreSQL Connection Related
 address = os.getenv("ADDRESS") 
@@ -41,3 +50,23 @@ def check_post_conn(conn):
 		return conn
 	else:
 		return create_post_conn()
+
+def check_weather_data(cursor):
+	global check_row_query
+	global check_last_entry_query
+	check_weather_data_query = check_row_query.format("weather_data")
+	cursor.execute(check_weather_data_query)
+	records = cursor.fetchall()
+	if not records:
+		weather_data_df.to_sql('weather_data', con=conn1, if_exists='append', index=False)
+	else:
+		cursor.execute(check_last_entry_query)
+		last_date = cursor.fetchall()[0]
+		new_dates = prep_dates(last_date)
+		if new_dates == []:
+			pass
+		else:
+			client_setup()
+			resp = call_api(start_date=new_dates(0), end_date=new_dates(1))
+			update_weather_data_df = process_data(resp=resp)
+			update_weather_data_df.to_sql('weather_data', con=conn1, if_exists='append', index=False)

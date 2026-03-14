@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 # Import Custom Scripts
 from db_conn_manager import general_query, get_all_tables, get_table_cols
+from recycle_functions import create_post_conn, check_weather_data
 from project_forms import raw_query_form
 
 # Define Global Functions
@@ -48,6 +49,10 @@ def index():
 	global cols_list
 	global table_html_vals
 	global raw_query_form
+	global conn
+	conn = create_post_conn()
+	cursor = conn.cursor()
+	check_weather_data(cursor=cursor) # Ensures that weather data is up to date (Essentially automation). 
 	form = raw_query_form()
 	data = 0
 	if request.method == 'POST':
