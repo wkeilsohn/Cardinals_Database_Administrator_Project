@@ -13,6 +13,7 @@ from sqlalchemy import create_engine
 from project_data import dba_project_data_df
 from open_metro_api import daily_dataframe as weather_data_df
 from update_open_metro_data_api import *
+from mlb_data import mlb_data
 
 # Load in Secrets
 load_dotenv()
@@ -37,7 +38,8 @@ check_last_entry_query = "SELECT weather_data.date FROM weather_data ORDER BY da
 
 ### Table Creation Queries
 table_dic = {'project_data': "CREATE TABLE IF NOT EXISTS project_data (snapshot_date date, game_date date, unique_tickets_sold int, unique_page_clicks int);",
-'weather_data': "CREATE TABLE IF NOT EXISTS weather_data (date date, temperature_2m_max float, temperature_2m_min float, apparent_temperature_max float, apparent_temperature_min float, rain_sum float, showers_sum float, snowfall_sum float, precipitation_sum float, precipitation_hours float);"}
+'weather_data': "CREATE TABLE IF NOT EXISTS weather_data (date date, temperature_2m_max float, temperature_2m_min float, apparent_temperature_max float, apparent_temperature_min float, rain_sum float, showers_sum float, snowfall_sum float, precipitation_sum float, precipitation_hours float);",
+'mlb_data': "CREATE TABLE IF NOT EXISTS mlb_data (game_date date);"}
 
 # Declare Functions
 def create_post_conn():
@@ -81,7 +83,7 @@ def check_weather_data(cursor):
 	check_weather_data_query = check_row_query.format("weather_data")
 	cursor.execute(check_weather_data_query)
 	records = cursor.fetchall()
-	if records is None:
+	if not records:
 		weather_data_df.to_sql('weather_data', con=conn1, if_exists='append', index=False)
 	else:
 		cursor.execute(check_last_entry_query)
@@ -102,5 +104,6 @@ if __name__ == "__main__":
 	cursor = conn.cursor()
 	validate_and_create_table(cursor=cursor, conn=conn) # Arguably redundant, but helps to better format the dates
 	dba_project_data_df.to_sql('project_data', con=conn1, if_exists='append', index=False) # Project data has no time stamp, so let's keep things consitant.  
+	mlb_data.to_sql('mlb_data', con=conn1, if_exists='append', index=False) # I'm only doing this once.
 	check_weather_data(cursor=cursor)
 	conn.close() # Just good etiquite. 
