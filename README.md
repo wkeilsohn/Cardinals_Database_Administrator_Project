@@ -57,7 +57,43 @@ Assuming your .env file is configured correctly, and your PostgreSQL instance is
 
 ## Use
 
+To start the Flask application, the following command can be used:
+
+```
+flask --app main run
+```
+
+Once the application is running, the interface can be viewed by navigating to the address provided upon startup. Assuming that this none of the defualt settings were changed when installing Flask, this application should be viewable at the following address:
+
+http://127.0.0.1:5000
+
+### Key Features
+
+The front end of this application mostly contains a window for entering SQL queries and an table depiciting the overall database schema. To query the database in this manner, one simply needs to enter a query into the text box and hit submit. This will cause the page to re-fresh and display the results of the query as and HTML table for the user. 
+
+Under the box for entering queries is an HTML table depicting the currently availbable tables in the database and the columns avaiable in each table. These options are presented to the user for quering and selecting data from the database. 
+
+### Automation
+
 TBA
+
+### Alternative Querying Methods
+
+In addition to the front end application provided, postgreSQL nativly comes with PgAdmin which can be used to run queries and investigate database structures. If one wishes to use PgAdmin instead of the Flask application provided in this repository, then they will need to connect PgAdmin to their postgreSQL database instance. This can easily be done using the on-screen instructions that pop-up when opening PgAdmin for the first time and entering the information recorded earlier regarding the database name, address, port, and user credentials. 
+
+### Schema
+
+The database contains three tables. These tables are best described as follows: 
+
+...TBD...
+
+### Recomended Queries
+
+TBD
+
+## Next Steps
+
+TBA 
 
 ## License
 

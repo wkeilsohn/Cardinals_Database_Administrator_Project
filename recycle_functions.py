@@ -1,6 +1,9 @@
 # William Keilsohn
 # March 14, 2026
 
+#### --- I am aware that this file can be made redundant with proper re-structuring. --- ####
+#### --- I'm not sure I'm going to have time to do that, so for now I have just created this file to house important functions --- ####
+
 # Import Packages
 import numpy as np
 import pandas as pd

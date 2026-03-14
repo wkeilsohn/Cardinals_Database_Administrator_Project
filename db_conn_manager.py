@@ -38,14 +38,6 @@ def general_query(string):
 		return df
 	except:
 		return pd.DataFrame() # Creates a blank on the page so and skips creating the error... hopefully...
-	# global conn
-	# conn = check_post_conn(conn)
-	# cursor = conn.cursor()
-	# try:
-	# 	cursor.execute(string)
-	# 	return cursor.fetchall()
-	# except:
-	# 	pass
 
 def get_all_tables():
 	global conn
